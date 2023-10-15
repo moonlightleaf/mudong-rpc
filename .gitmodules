@@ -1,0 +1,6 @@
+[submodule "third_party/mudong-json"]
+	path = third_party/mudong-json
+	url = https://github.com/moonlightleaf/mudong-json.git
+[submodule "third_party/mudong-ev"]
+	path = third_party/mudong-ev
+	url = https://github.com/moonlightleaf/mudong-ev.git
