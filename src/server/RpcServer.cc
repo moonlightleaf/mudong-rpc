@@ -135,7 +135,7 @@ void RpcServer::handleSingleRequest(mudong::json::Value& request, const RpcDoneC
     auto methodName = request["method"].getStringView();
     // 格式为"method":"serviceName.methodName"
     auto pos = methodName.find('.');
-    if (pos = std::string_view::npos) {
+    if (pos == std::string_view::npos) {
         throw RequestException(RpcError(ERROR::RPC_METHOD_NOT_FOUND), id, "missing service name in method");
     }
 

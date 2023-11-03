@@ -49,7 +49,6 @@ static void genStub(FILE* input, bool serverSide, bool outputToFile) {
         std::cerr << mudong::json::parseErrorStr(err) << std::endl;
         exit(1);
     }
-
     try {
         auto generator = makeGenerator(serverSide, proto);
         writeToFile(*generator, outputToFile);
@@ -115,6 +114,5 @@ int main(int argc, char** argv) {
         std::cerr << "input error: " << e.what() << std::endl;
         exit(1);
     }
-
     return 0;
 }

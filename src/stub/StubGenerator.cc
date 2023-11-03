@@ -84,7 +84,7 @@ void StubGenerator::validateParams(json::Value& params) {
 }
 
 // 检测返回值合法性
-void StubGenerator::validateParams(json::Value& returns) {
+void StubGenerator::validateReturns(json::Value& returns) {
     switch (returns.getType()) {
     case json::ValueType::TYPE_NULL:
     case json::ValueType::TYPE_ARRAY:

@@ -68,7 +68,7 @@ private:
 
 } // namespce mudong
 )";
-    replaceAll(str, "[macroName]", macroName);
+    replaceAll(str, "[macroName]", macroName); // 使用pragma once预编译指令，没有使用ifndef控制方式，因此macroName无实际意义
     replaceAll(str, "[stubClassName]", stubClassName);
     replaceAll(str, "[procedureDefinitions]", procedureDefinitions);
     replaceAll(str, "[notifyDefinitions]", notifyDefinitions);

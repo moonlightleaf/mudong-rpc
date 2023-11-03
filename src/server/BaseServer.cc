@@ -4,6 +4,7 @@
 
 #include "utils/Exception.hpp"
 #include "server/BaseServer.hpp"
+#include "server/RpcServer.hpp"
 
 using namespace mudong::rpc;
 
@@ -13,6 +14,8 @@ const size_t kHighWaterMark = 65536;
 const size_t kMaxMessageLen = 100 * 1024 * 1024;
 
 } // anonymous namespace
+
+template class BaseServer<RpcServer>;
 
 template<typename ProtocolServer>
 BaseServer<ProtocolServer>::BaseServer(EventLoop* loop, const InetAddress& listen)
@@ -26,7 +29,7 @@ template<typename ProtocolServer>
 void BaseServer<ProtocolServer>::onConnection(const TcpConnectionPtr& conn) {
     if (conn->connected()) {
         DEBUG("connection {} is [up]", conn->peer().toIpPort());
-        conn->setHighWaterMarkCallback(std::bind(&BaseServer:onHighWaterMark, this, _1, _2), kHighWaterMark);
+        conn->setHighWaterMarkCallback(std::bind(&BaseServer::onHighWaterMark, this, _1, _2), kHighWaterMark);
     }
     else {
         DEBUG("connection {} is [down]", conn->peer().toIpPort());
@@ -42,7 +45,7 @@ void BaseServer<ProtocolServer>::onMessage(const TcpConnectionPtr& conn, Buffer&
     // 失败则返回异常信息打包成Value发送给对方，并断开连接
     catch (RequestException& e) {
         mudong::json::Value response = wrapException(e);
-        sendRespense(conn, response);
+        sendResponse(conn, response);
         conn->shutdown();
 
         WARN("BaseServer::onMessage() {} request error: {}", conn->peer().toIpPort(), e.what());
@@ -95,7 +98,7 @@ void BaseServer<ProtocolServer>::handleMessage(const TcpConnectionPtr& conn, Buf
         // 调用子类类型对象中的handleRequest，CRTP
         convert().handleRequest(json, [conn, this](const mudong::json::Value& response){
             if (!response.isNull()) {
-                sendRespense(conn, response);
+                sendResponse(conn, response);
                 TRACE("BaseServer::handleMessage() {} request success", conn->peer().toIpPort());
             }
             else {
@@ -121,7 +124,7 @@ template<typename ProtocolServer>
 mudong::json::Value BaseServer<ProtocolServer>::wrapException(RequestException& e) {
     mudong::json::Value response(mudong::json::ValueType::TYPE_OBJECT);
     response.addMember("jsonrpc", "2.0");
-    auto& value = response.addMember("error", static_cast<int>(mudong::json::ValueType::TYPE_OBJECT));
+    auto& value = response.addMember("error", mudong::json::ValueType::TYPE_OBJECT);
     value.addMember("code", e.err().asCode());
     value.addMember("message", e.err().asString());
     value.addMember("data", e.detail());

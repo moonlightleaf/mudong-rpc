@@ -32,8 +32,13 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 
 include_directories(
         third_party
-        ${PROJECT_SOURCE_DIR}/src)
+        ${PROJECT_SOURCE_DIR}/src
+        ${PROJECT_BINARY_DIR})
 
 add_subdirectory(third_party/mudong-json)
 add_subdirectory(third_party/mudong-ev)
 add_subdirectory(src)
+
+if (CMAKE_BUILD_EXAMPLES)
+        add_subdirectory(examples)
+endif()

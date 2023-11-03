@@ -8,7 +8,7 @@ namespace mudong {
 
 namespace rpc {
 
-using ResponseCallback = std::function<void(mudong::json::Value&, bool isError, bool isTimeout)>;
+using ResponseCallback = std::function<void(const mudong::json::Value, bool isError, bool isTimeout)>;
 
 class BaseClient : noncopyable {
 

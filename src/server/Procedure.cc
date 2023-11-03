@@ -38,7 +38,7 @@ void Procedure<ProcedureNotifyCallback>::validateRequest(json::Value& request) c
 template <typename Func>
 bool Procedure<Func>::validateGeneric(json::Value& request) const {
     auto mIter = request.findMember("params");
-    if (mIter == request.memberEnd()) {
+    if (mIter == request.endMember()) {
         return params_.empty();
     }
 
@@ -50,17 +50,20 @@ bool Procedure<Func>::validateGeneric(json::Value& request) const {
     switch (params.getType()) {
         case mudong::json::ValueType::TYPE_ARRAY:
             for (size_t i = 0; i < params_.size(); i++) {
-                if (params[i].getType() != params_[i].paramType)
+                if (params[i].getType() != params_[i].paramType) {
                     return false;
+                }
             }
             break;
         case mudong::json::ValueType::TYPE_OBJECT:
             for (auto& p : params_) {
                 auto it = params.findMember(p.paramName);
-                if (it == params.memberEnd())
+                if (it == params.endMember()) {
                     return false;
-                if (it->value.getType() != p.paramType)
+                }
+                if (it->value.getType() != p.paramType) {
                     return false;
+                }
             }
             break;
         default:

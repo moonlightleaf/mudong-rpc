@@ -26,7 +26,7 @@ public:
         constexpr int n = sizeof... (ParamNameAndTypes);
         static_assert(n % 2 == 0, "procedure must have param name and type paris");
 
-        if constexpr (n > ) {
+        if constexpr (n > 0) {
             initProcedure(nameAndTypes...);
         }
     }
@@ -39,12 +39,13 @@ public:
 private:
     template<typename Name, typename... ParamNameAndTypes>
     void initProcedure(Name paramName, mudong::json::ValueType paramType, ParamNameAndTypes&& ... nameAndType) {
-        static_assert(std::is_same_v<Name, const char*> ||
+        static_assert(std::is_same_v<Name, const char (&)[]> ||
+                      std::is_same_v<Name, const char*> ||
                       std::is_same_v<Name, std::string_view> ||
                       std::is_same_v<Name, std::string>,
                       "wrong type with Name");
         params_.emplace_back(paramName, paramType);
-        if (sizeof... (ParamNameAndTypes) > 0) initProcedure(std::forward(nameAndType...)); // 自动识别模板参数的个数，递归下降解析
+        if constexpr (sizeof... (ParamNameAndTypes) > 0) initProcedure(nameAndType...); // 自动识别模板参数的个数，递归下降解析
     }
 
     void validateRequest(mudong::json::Value& request) const;
