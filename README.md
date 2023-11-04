@@ -122,6 +122,7 @@ RPC调用完毕，返回成功。
 ```shell
 $ git clone https://github.com/moonlightleaf/mudong-rpc.git
 $ cd mudong-rpc
+$ git submodule update --init --recursive
 $ mkdir build && cd build
 $ cmake [-DCMAKE_BUILD_EXAMPLES=1] ..
 $ make install
